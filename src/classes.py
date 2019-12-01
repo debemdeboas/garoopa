@@ -77,7 +77,8 @@ class Neighborhood:
         self.bottom_left_y = bottom_left_y
         self.top_right_x = top_right_x
         self.top_right_y = top_right_y
-        self.center_point = (abs(bottom_left_x - top_right_x) / 2, abs(bottom_left_y - top_right_y) / 2)
+        self.center_point = math.ceil(abs(top_right_x - bottom_left_x) / 2), math.ceil(
+            abs(bottom_left_y - top_right_y) / 2)
 
     def pos(self):
         return (self.bottom_left_x, self.bottom_left_y), (self.top_right_x, self.top_right_y)
@@ -107,9 +108,12 @@ class Trip:
         trip_cost = 0
         i = 0
         for n in self.route.city.neighborhoods:
-            g.set_pos(n.pos)
+            g.set_pos(n.pos())
             if g.cohenSutherlandClip(self.route.origin.center_point[0], self.route.origin.center_point[1],
                                      self.route.destiny.center_point[0], self.route.destiny.center_point[1]):
                 trip_cost += n.base_cost
                 i += 1
+                print(self.route.origin.name, self.route.origin.center_point[0], self.route.origin.center_point[1],
+                      self.route.destiny.name, self.route.destiny.center_point[0], self.route.destiny.center_point[1])
+                print(n.name)
         return trip_cost, i
