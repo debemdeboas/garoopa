@@ -22,7 +22,7 @@ class Geometry:
     @staticmethod
     def get_instance():
         if Geometry.__instance is None:
-            Geometry(0, 0, 0, 0)
+            Geometry()
         return Geometry.__instance
 
     def set_pos(self, pos):
@@ -31,7 +31,7 @@ class Geometry:
         self.x_max = pos[1][0]
         self.y_max = pos[1][1]
 
-    def __init__(self, x_max, y_max, x_min, y_min):
+    def __init__(self, x_max=0, y_max=0, x_min=0, y_min=0):
         if Geometry.__instance is not None:
             raise Exception("This class is a singleton.")
         else:
@@ -119,15 +119,14 @@ class Geometry:
         else:
             return False
 
+    def in_rectangle(self, x1, y1, x2, y2):
+        # Compute region codes for P1, P2
+        code1 = self.computeCode(x1, y1)
+        code2 = self.computeCode(x2, y2)
 
-# # First Line segment
-# # P11 = (5, 5), P12 = (7, 7)
-# cohenSutherlandClip(5, 5, 7, 7)
-#
-# # Second Line segment
-# # P21 = (7, 9), P22 = (11, 4)
-# cohenSutherlandClip(7, 9, 11, 4)
-#
-# # Third Line segment
-# # P31 = (1, 5), P32 = (4, 1)
-# cohenSutherlandClip(1, 5, 4, 1)
+        # If both endpoints are outside rectangle
+        if (code1 & code2) != 0:
+            return False
+        # Either the line is completely inside or partially inside...
+        return True
+

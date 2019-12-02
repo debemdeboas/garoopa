@@ -1,6 +1,6 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, render_template
 
-from src.geometry import Geometry
+from src.classes import *
 
 app = Flask(__name__)
 
@@ -16,29 +16,19 @@ def api_get():
 
 @app.route("/")
 def root():
-    return send_file("index.html")
+    return render_template('index.html')
 
 
 @app.route("/user")
 def user():
-    return send_file("user.html")
+    return render_template('user.html', ranks=ranks)
 
 
 @app.route("/driver")
 def driver():
-    return send_file("driver.html")
-
-
-def calc_trip(trip, current_driver):
-    base_cost, number_of_neighborhoods = trip.trip_cost()
-    if current_driver.rank == 'LUX':
-        base_cost = base_cost * 1.1
-        base_cost = base_cost * (1 + (0.02 * number_of_neighborhoods))
-    elif current_driver.rank == 'SIMPLE':
-        base_cost = base_cost * 1.1
-    return base_cost
+    return render_template('driver.html')
 
 
 if __name__ == "__main__":
-    Geometry(0, 0, 0, 0)
+    Geometry()
     app.run(debug=True)

@@ -2,13 +2,13 @@ import math
 
 from src.geometry import Geometry
 
-ranks = {'SIMPLE', 'NORMAL', 'LUX'}
+ranks = ['SIMPLE', 'NORMAL', 'LUX']
 
-payment_methods = {'MONEY', 'DEBIT', 'CREDIT'}
+payment_methods = ['MONEY', 'DEBIT', 'CREDIT']
 
 
 class Vehicle:
-    def __init__(self, lic_plate, make, color, car_type):
+    def __init__(self, lic_plate, make, color, car_type='SIMPLE'):
         self.lic_plate = lic_plate
         self.make = make
         self.color = color
@@ -17,7 +17,7 @@ class Vehicle:
 
 class SimpleCar(Vehicle):
     def __init__(self, lic_plate, make, color):
-        super().__init__(lic_plate, make, color, 'SIMPLE')
+        super().__init__(lic_plate, make, color)
 
 
 class NormalCar(Vehicle):
@@ -35,13 +35,26 @@ class LuxCar(Vehicle):
 
 class VehicleFactory:
     @staticmethod
-    def create_vehicle(self, car_type, car, answers=False, big_trunk=False):
+    def create_vehicle(car_type, lic_plate, make, color, answers=False, big_trunk=False):
+        car_type = car_type.upper()
         if car_type == 'SIMPLE':
-            return SimpleCar(car.lic_plate, car.make, car.color)
+            return VehicleFactory.create_simple_car(lic_plate, make, color)
         elif car_type == 'NORMAL':
-            return NormalCar(car.lic_plate, car.make, car.color, answers)
+            return VehicleFactory.create_normal_car(lic_plate, make, color, answers)
         elif car_type == 'LUX':
-            return LuxCar(car.lic_plate, car.make, car.color, answers, big_trunk)
+            return VehicleFactory.create_lux_car(lic_plate, make, color, answers, big_trunk)
+
+    @staticmethod
+    def create_simple_car(lic_plate, make, color):
+        return SimpleCar(lic_plate, make, color)
+
+    @staticmethod
+    def create_normal_car(lic_plate, make, color, answers):
+        return NormalCar(lic_plate, make, color, answers)
+
+    @staticmethod
+    def create_lux_car(lic_plate, make, color, answers, big_trunk):
+        return LuxCar(lic_plate, make, color, answers, big_trunk)
 
 
 class Member:
@@ -62,6 +75,7 @@ class Driver(Member):
         self.car = car
         self.payment_method = payment_method
         self.rank = car.car_type
+        self.trips = {}  # Trips dictionary of type <PassengerCPF, [Trip]>
 
 
 class Passenger(Member):
@@ -77,8 +91,7 @@ class Neighborhood:
         self.bottom_left_y = bottom_left_y
         self.top_right_x = top_right_x
         self.top_right_y = top_right_y
-        self.center_point = math.ceil(abs(top_right_x - bottom_left_x) / 2), math.ceil(
-            abs(bottom_left_y - top_right_y) / 2)
+        self.center_point = (top_right_x + bottom_left_x) / 2, (top_right_y + bottom_left_y) / 2
 
     def pos(self):
         return (self.bottom_left_x, self.bottom_left_y), (self.top_right_x, self.top_right_y)
@@ -87,7 +100,7 @@ class Neighborhood:
 class City:
     def __init__(self, name, neighborhoods):
         self.name = name
-        self.neighborhoods = neighborhoods  # List
+        self.neighborhoods = neighborhoods  # Neighborhood list
 
 
 class Route:
@@ -96,24 +109,50 @@ class Route:
         self.origin = origin  # Neighborhood
         self.destiny = destiny  # Neighborhood
 
-
-class Trip:
-    def __init__(self, trip_id, time, route):
-        self.trip_id = trip_id
-        self.datetime = time
-        self.route = route
-
-    def trip_cost(self):
+    def route_cost(self):
         g = Geometry.get_instance()
         trip_cost = 0
         i = 0
-        for n in self.route.city.neighborhoods:
+        origin_x = self.origin.center_point[0]
+        origin_y = self.origin.center_point[1]
+        destiny_x = self.destiny.center_point[0]
+        destiny_y = self.destiny.center_point[1]
+
+        for n in self.city.neighborhoods:
             g.set_pos(n.pos())
-            if g.cohenSutherlandClip(self.route.origin.center_point[0], self.route.origin.center_point[1],
-                                     self.route.destiny.center_point[0], self.route.destiny.center_point[1]):
-                trip_cost += n.base_cost
-                i += 1
-                print(self.route.origin.name, self.route.origin.center_point[0], self.route.origin.center_point[1],
-                      self.route.destiny.name, self.route.destiny.center_point[0], self.route.destiny.center_point[1])
-                print(n.name)
+            if g.in_rectangle(origin_x, origin_y, destiny_x, destiny_y):
+                trip_cost = trip_cost + n.base_cost
+                i = i + 1
         return trip_cost, i
+
+
+def simple_trip_price(base_cost):
+    return base_cost[0]
+
+
+def normal_trip_price(base_cost):
+    return round(base_cost[0] * 1.1, 2)  # Price + 110%
+
+
+def lux_trip_price(base_cost):
+    return round(normal_trip_price(base_cost) * (((2 * base_cost[1]) / 100) + 1), 2)
+
+
+class Trip:
+    def __init__(self, passenger, driver, trip_id, time, route):
+        self.trip_id = trip_id
+        self.datetime = time
+        self.route = route
+        self.passenger = passenger
+        self.driver = driver
+
+        if driver.rank == 'LUX':
+            self.cost = lux_trip_price
+        elif driver.rank == 'NORMAL':
+            self.cost = normal_trip_price
+        else:
+            self.cost = simple_trip_price
+
+    def trip_cost(self):
+        route_cost = self.route.route_cost()
+        return self.cost(route_cost)
