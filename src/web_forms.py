@@ -30,5 +30,5 @@ class TripForm(FlaskForm):
 
 
 class RateDriverForm(FlaskForm):
-    stars = SelectField('Stars', choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    stars = SelectField('Stars', choices=[(v, v) for v in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]])
     submit = SubmitField('Rate driver')

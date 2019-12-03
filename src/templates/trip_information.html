@@ -2,12 +2,12 @@
 {% block content %}
 <div>
     <h2>Summary of trip {{ trip.trip_id }}</h2>
-    <strong>Hour: </strong> {{ trip.datetime }}
-    <strong>From: </strong> {{ trip.route.origin.name }}
-    <strong>To: </strong> {{ trip.route.destiny.name }}
-    <strong>Called by: </strong> {{ trip.passenger.name }}
-    <strong>Driven by: </strong> {{ trip.driver.name }}
-    <strong>Invoice: </strong> {{ trip.trip_cost() }}
+    <div><strong>Hour: </strong> {{ trip.datetime }}</div>
+    <div><strong>From: </strong> {{ trip.route.origin.name }}</div>
+    <div><strong>To: </strong> {{ trip.route.destiny.name }}</div>
+    <div><strong>Called by: </strong> {{ trip.passenger.name }}</div>
+    <div><strong>Driven by: </strong> {{ trip.driver.name }}</div>
+    <div><strong>Invoice: </strong> G$ {{ trip.trip_cost() }}</div>
 </div>
 <div>
     <h2>Rate {{ trip.driver.name }}</h2>

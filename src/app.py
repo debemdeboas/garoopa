@@ -14,7 +14,7 @@ drivers = {
     '69273238972': Driver('69273238972', 'Agnaldo de Freitas',
                           NormalCar('JAG0A90', 'Ford Focus', 'Black'), 'CREDIT', True)
 }
-trips = {}
+all_trips = {}
 
 number_of_trips = 0
 
@@ -52,8 +52,7 @@ def registered_user(cpf):
     form.driver_ranks.choices = [(r, r) for r in ranks]
     form.from_where.choices = [(n.name, n.name) for n in city_info.neighborhoods]
     form.to_where.choices = [(n.name, n.name) for n in city_info.neighborhoods]
-
-    if form.validate_on_submit():
+    if form.is_submitted():
         curr_driver = get_driver(form.driver_ranks.data, form.payment_method.data, clients[cpf], drivers,
                                  form.big_trunk.data)
         if not curr_driver:
@@ -61,25 +60,24 @@ def registered_user(cpf):
         global number_of_trips
         number_of_trips += 1
         route = Route(city_info, get_neighborhood(form.from_where.data, neighborhoods_list),
-                      get_neighborhood(form.to_where, neighborhoods_list))
+                      get_neighborhood(form.to_where.data, neighborhoods_list))
         trip = Trip(clients[cpf], curr_driver, number_of_trips, datetime.datetime.now(), route)
-        driver.trips[cpf] = trip
-        trips[number_of_trips] = trip
-        # TODO Implement driver rating
-        return redirect('/trip_information/' + number_of_trips)
+        curr_driver.trips[cpf] = trip
+        all_trips[str(number_of_trips)] = trip
+
+        return redirect('/trip_information/' + str(number_of_trips))
     return render_template('registered_user.html', main_header='Client - Main Menu',
                            user=clients[cpf], form=form)
 
 
 @app.route('/trip_information/<trip_id>', methods=['POST', 'GET'])
 def trip_information(trip_id):
-    t = trips[trip_id]
-    form = RateDriverForm
-    if form.validate_on_submit():
-        t.driver.add_eval(form.stars.data)
-        return redirect(f'registered_user/{t.passenger.cpf}')
-    return render_template('trip_information.html', main_header='Summary of trip ' + trip_id, title='Trip Summary',
-                           trip=t, form=form)
+    t = all_trips[trip_id]
+    form = RateDriverForm()
+    if form.is_submitted():
+        t.driver.add_eval(int(form.stars.data))
+        return redirect(f'/registered_user/{t.passenger.cpf}')
+    return render_template('trip_information.html', main_header='Trip Summary', trip=t, form=form)
 
 
 @app.route('/driver', methods=['POST', 'GET'])

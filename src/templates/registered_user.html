@@ -4,11 +4,11 @@
         <h1>Hello {{ user.name }}!</h1>
         <div>
             <h2>User information</h2>
-            {{ user.name }}
-            {{ user.cpf }}
+            <p>Name: {{ user.name }}</p>
+            <p>CPF: {{ user.cpf }}</p>
         </div>
 
-        <h2>Request a Trip from {{ form.city.name }}</h2>
+        <h2>Request a Trip from city {{ form.city.name }}</h2>
         <form method="post" action="">
             {{ form.hidden_tag() }}
             <div>
@@ -23,7 +23,7 @@
             <div>
                 <a>Payment method: </a> {{ form.payment_method }}
             </div>
-            {{ form.submit }}
+            {{ form.submit() }}
         </form>
     </div>
 {% endblock content %}
