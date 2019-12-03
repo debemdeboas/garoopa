@@ -21,43 +21,41 @@ class SimpleCar(Vehicle):
 
 
 class NormalCar(Vehicle):
-    def __init__(self, lic_plate, make, color, answers):
+    def __init__(self, lic_plate, make, color):
         super().__init__(lic_plate, make, color, 'NORMAL')
-        self.answers = answers
 
 
 class LuxCar(Vehicle):
-    def __init__(self, lic_plate, make, color, answers, big_trunk):
+    def __init__(self, lic_plate, make, color, big_trunk):
         super().__init__(lic_plate, make, color, 'LUX')
-        self.answers = answers
         self.big_trunk = big_trunk
 
 
 class VehicleFactory:
     @staticmethod
-    def create_vehicle(car_type, lic_plate, make, color, answers=False, big_trunk=False):
+    def create_vehicle(car_type, lic_plate, make, color, big_trunk=False):
         car_type = car_type.upper()
         if car_type == 'SIMPLE':
             return VehicleFactory.create_simple_car(lic_plate, make, color)
         elif car_type == 'NORMAL':
-            return VehicleFactory.create_normal_car(lic_plate, make, color, answers)
+            return VehicleFactory.create_normal_car(lic_plate, make, color)
         elif car_type == 'LUX':
-            return VehicleFactory.create_lux_car(lic_plate, make, color, answers, big_trunk)
+            return VehicleFactory.create_lux_car(lic_plate, make, color, big_trunk)
 
     @staticmethod
     def create_simple_car(lic_plate, make, color):
         return SimpleCar(lic_plate, make, color)
 
     @staticmethod
-    def create_normal_car(lic_plate, make, color, answers):
-        return NormalCar(lic_plate, make, color, answers)
+    def create_normal_car(lic_plate, make, color):
+        return NormalCar(lic_plate, make, color)
 
     @staticmethod
-    def create_lux_car(lic_plate, make, color, answers, big_trunk):
-        return LuxCar(lic_plate, make, color, answers, big_trunk)
+    def create_lux_car(lic_plate, make, color, big_trunk):
+        return LuxCar(lic_plate, make, color, big_trunk)
 
 
-class Member:
+class Member():
     def __init__(self, cpf, name):
         self.cpf = cpf
         self.name = name
@@ -70,12 +68,14 @@ class Member:
 
 
 class Driver(Member):
-    def __init__(self, cpf, name, car, payment_method):
+    def __init__(self, cpf, name, car, payment_method, answers=False):
         super().__init__(cpf, name)
         self.car = car
         self.payment_method = payment_method
         self.rank = car.car_type
         self.trips = {}  # Trips dictionary of type <PassengerCPF, [Trip]>
+        if self.rank in ['NORMAL', 'LUX']:
+            self.answers = answers
 
 
 class Passenger(Member):

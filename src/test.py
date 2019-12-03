@@ -14,13 +14,13 @@ class TestCases(unittest.TestCase):
         self.c = City("Porto Alegre", self.neighborhoods_list)
 
         self.c1 = VehicleFactory.create_vehicle('SIMPLE', '1234ABC', 'Ford Focus', 'Blue')
-        self.c2 = VehicleFactory.create_vehicle('NORMAL', '1234DCC', 'Rav4', 'Gray', True, True)
-        self.c3 = VehicleFactory.create_vehicle('lux', 'IRH6Z86', 'Lexus', 'Red', False, True)
+        self.c2 = VehicleFactory.create_vehicle('NORMAL', '1234DCC', 'Rav4', 'Gray', True)
+        self.c3 = VehicleFactory.create_vehicle('lux', 'IRH6Z86', 'Lexus', 'Red', True)
         self.car_list = [self.c1, self.c2, self.c3]
 
         self.driver1 = Driver(123456789, "John Doe", self.c1, ['DEBIT', 'CREDIT'])
-        self.driver2 = Driver(465984488, "Joo Dee", self.c2, ['MONEY', 'CREDIT'])
-        self.driver3 = Driver(684591377, "Azulon", self.c3, ['MONEY'])
+        self.driver2 = Driver(465984488, "Joo Dee", self.c2, ['MONEY', 'CREDIT'], True)
+        self.driver3 = Driver(684591377, "Azulon", self.c3, ['MONEY'], False)
 
     def test_route_cost(self):
         r = Route(self.c, self.neighborhoods_list[3], self.neighborhoods_list[0])

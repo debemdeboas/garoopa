@@ -1,8 +1,20 @@
-<!DOCTYPE html>
-<head>
-    <title>User Menu</title>
-</head>
-<body>
-    <h1>This is the landing page for GarOOpa users</h1>
-    <a href="/">Home Page</a>
-</body>
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <h2>Registering new user</h2>
+        <form method="post" action="">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.username.label() }}
+                {{ form.username() }}
+            </div>
+            <div>
+                {{ form.cpf.label() }}
+                {{ form.cpf() }}
+            </div>
+            <div>
+                {{ form.submit() }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

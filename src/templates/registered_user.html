@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <h1>Hello {{ user.name }}!</h1>
+        <h2>Request a Trip</h2>
+        <div>
+            <a>Car Type</a>
+            <select>
+                {% for rank in ranks %}
+                    <option value="{{ rank }}">{{ rank }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <a>Payment Method</a>
+            <select>
+                {% for method in p_methods %}
+                    <option value="{{ method }}">{{ method }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endblock content %}

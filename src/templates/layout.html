@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% if title %}
+        <title>{{ Title }}</title>
+    {% endif %}
+</head>
+<body>
+    {% if main_header %}
+        <h1>{{ main_header }}</h1>
+    {% endif %}
+    <a href="/">Home Page</a>
+    {% block content %}{% endblock content %}
+</body>
+</html>

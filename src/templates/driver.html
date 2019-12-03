@@ -1,8 +1,36 @@
-<!DOCTYPE html>
-<head>
-    <title>Driver Menu</title>
-</head>
-<body>
-    <h1>This is the landing page for GarOOpa drivers</h1>
-    <a href="/">Home</a>
-</body>
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <h2>Registering new driver</h2>
+        <form method="post" action="registered_driver">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.username.label() }}
+                {{ form.username() }}
+            </div>
+            <div>
+                {{ form.cpf.label() }}
+                {{ form.cpf() }}
+            </div>
+            <div>
+                {{ form.lic_plate.label() }}
+                {{ form.lic_plate() }}
+            </div>
+            <div>
+                {{ form.make.label() }}
+                {{ form.make() }}
+            </div>
+            <div>
+                {{ form.color.label() }}
+                {{ form.color() }}
+            </div>
+            <div>
+                {{ form.answers.label() }}
+                {{ form.answers() }}
+            </div>
+            <div>
+                {{ form.submit() }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
