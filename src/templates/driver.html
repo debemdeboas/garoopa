@@ -2,7 +2,7 @@
 {% block content %}
     <div>
         <h2>Registering new driver</h2>
-        <form method="post" action="registered_driver">
+        <form method="post" action="">
             {{ form.hidden_tag() }}
             <div>
                 {{ form.username.label() }}
@@ -11,6 +11,12 @@
             <div>
                 {{ form.cpf.label() }}
                 {{ form.cpf() }}
+            </div>
+            <div>
+                Accepted payment methods {{ form.payment_methods }}
+            </div>
+            <div>
+                Car type {{ form.car_type }}
             </div>
             <div>
                 {{ form.lic_plate.label() }}
@@ -27,6 +33,10 @@
             <div>
                 {{ form.answers.label() }}
                 {{ form.answers() }}
+            </div>
+            <div>
+                {{ form.big_trunk.label() }}
+                {{ form.big_trunk }}
             </div>
             <div>
                 {{ form.submit() }}

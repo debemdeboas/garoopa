@@ -73,22 +73,38 @@ def registered_user(cpf):
 @app.route('/trip_information/<trip_id>', methods=['POST', 'GET'])
 def trip_information(trip_id):
     t = all_trips[trip_id]
-    form = RateDriverForm()
+    form = RateForm()
     if form.is_submitted():
         t.driver.add_eval(int(form.stars.data))
-        return redirect(f'/registered_user/{t.passenger.cpf}')
+        return redirect('/registered_user/' + str(t.passenger.cpf))
     return render_template('trip_information.html', main_header='Trip Summary', trip=t, form=form)
 
 
 @app.route('/driver', methods=['POST', 'GET'])
 def driver():
     form = DriverRegistrationForm()
+    form.car_type.choices = [(r, r) for r in ranks]
+    form.payment_methods.choices = [(p, p) for p in payment_methods]
+    if form.validate_on_submit():
+        car = VehicleFactory.create_vehicle(form.car_type.data, form.lic_plate.data, form.make.data, form.color.data,
+                                            form.big_trunk.data)
+        drivers[form.cpf.data] = Driver(form.cpf.data, form.username.data, car, form.payment_methods.data,
+                                        form.answers.data)
+        return redirect('/registered_driver/' + form.cpf.data)
     return render_template('driver.html', form=form, main_header='Driver Registration Page', title='Register Driver')
 
 
 @app.route('/registered_driver/<cpf>', methods=['POST', 'GET'])
 def registered_driver(cpf):
-    return render_template('registered_driver.html', main_header='Driver\'s Control Panel', title='Control Panel')
+    d = drivers[cpf]
+    form = RateDriverTripsForm()
+    form.selected_trip.choices = [(t.trip_id, t.trip_id) for t in all_trips.values()]
+    if form.is_submitted():
+        selected_trip = all_trips[form.selected_trip.data]
+        selected_trip.passenger.add_eval(int(form.stars.data))
+        return redirect('#')
+    return render_template('registered_driver.html', main_header='Driver\'s Control Panel', title='Control Panel',
+                           driver=d, form=form)
 
 
 if __name__ == "__main__":

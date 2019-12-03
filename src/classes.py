@@ -74,7 +74,7 @@ class Driver(Member):
         self.car = car
         self.payment_method = payment_method
         self.rank = car.car_type
-        self.trips = {}  # Trips dictionary of type <PassengerCPF, [Trip]>
+        self.trips = {}  # Trips dictionary of type <PassengerCPF, Trip>
         if self.rank in ['NORMAL', 'LUX']:
             self.answers = answers
 
@@ -159,17 +159,22 @@ class Trip:
         return self._cost(route_cost)
 
 
-def get_driver(rank, p_method, passenger, drivers, big_trunk):
+def get_driver(rank, p_method, passenger, drivers, big_trunk=False):
     selected_drivers = []
+
     for d in drivers.values():
         if p_method in d.payment_method:
             selected_drivers.append(d)
+
     categorized_drivers = []
+
     for d in selected_drivers:
         if (d.rank == rank) or d.answers:
             if not (d.rank == 'NORMAL' and rank == 'LUX'):
                 categorized_drivers.append(d)
+
     starred_drivers = []
+
     for d in categorized_drivers:
         if -2 <= d.stars - passenger.stars <= 2:
             starred_drivers.append(d)

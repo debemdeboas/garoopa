@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, SubmitField, BooleanField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 
@@ -11,10 +11,13 @@ class MemberRegistrationForm(FlaskForm):
 
 
 class DriverRegistrationForm(MemberRegistrationForm):
+    car_type = SelectField('Car Type', choices=[], validators=[DataRequired()])
     lic_plate = StringField('License Plate', validators=[DataRequired()])
     make = StringField('Make and Model', validators=[DataRequired()])
     color = StringField('Color', validators=[DataRequired()])
     answers = BooleanField('Answer lower-category trips?')
+    big_trunk = BooleanField('Does your car have a big trunk?')
+    payment_methods = SelectMultipleField('Accepted Payment Methods', validators=[DataRequired()], choices=[])
 
 
 class TripForm(FlaskForm):
@@ -29,6 +32,10 @@ class TripForm(FlaskForm):
     submit = SubmitField('Request trip')
 
 
-class RateDriverForm(FlaskForm):
+class RateForm(FlaskForm):
     stars = SelectField('Stars', choices=[(v, v) for v in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]])
-    submit = SubmitField('Rate driver')
+    submit = SubmitField('Rate')
+
+
+class RateDriverTripsForm(RateForm):
+    selected_trip = SelectField('Trip ID', choices=[], validators=[DataRequired()])

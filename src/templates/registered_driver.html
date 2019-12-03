@@ -1,4 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
-
+    <h2>Total trips for {{ driver.name }}: {{ driver.trips|length }}</h2>
+    <p>Driver grade: {{ driver.stars }}</p>
+    {% for id,trip in driver.trips.items() %}
+        <h3>Trip {{ trip.trip_id }}</h3>
+        <div><strong>Hour: </strong> {{ trip.datetime }}</div>
+        <div><strong>From: </strong> {{ trip.route.origin.name }}</div>
+        <div><strong>To: </strong> {{ trip.route.destiny.name }}</div>
+        <div><strong>Called by: </strong> {{ trip.passenger.name }}</div>
+        <div><strong>Price: </strong> G$ {{ trip.trip_cost() }}</div>
+        <hr>
+    {% endfor %}
+    <h2>Select a trip in order to rate the client</h2>
+    <form method="post" action="">
+        <strong>Trip ID: </strong>{{ form.selected_trip }}
+        {{ form.stars }}
+        {{ form.submit() }}
+    </form>
 {% endblock content %}
