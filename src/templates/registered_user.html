@@ -2,23 +2,22 @@
 {% block content %}
     <div>
         <h1>Hello {{ user.name }}!</h1>
-        <h2>Request a Trip</h2>
-        <div>
-            <a>Car Type</a>
-            <select>
-                {% for rank in ranks %}
-                    <option value="{{ rank }}">{{ rank }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <a>Payment Method</a>
-            <select>
-                {% for method in p_methods %}
-                    <option value="{{ method }}">{{ method }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        <h2>Request a Trip from {{ form.city.name }}</h2>
+        <form method="post" action="">
+            {{ form.hidden_tag() }}
+            <div>
+                <a>From</a> {{ form.from_where }}
+                <a>To</a> {{ form.to_where }}
+            </div>
+            <div>
+                <a>Car type: </a> {{ form.driver_ranks }}
+                {{ form.big_trunk.label() }}
+                {{ form.big_trunk }}
+            </div>
+            <div>
+                <a>Payment method: </a> {{ form.payment_method }}
+            </div>
+            {{ form.submit }}
+        </form>
     </div>
 {% endblock content %}

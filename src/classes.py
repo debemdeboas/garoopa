@@ -1,4 +1,5 @@
 import math
+import random
 
 from src.geometry import Geometry
 
@@ -55,12 +56,12 @@ class VehicleFactory:
         return LuxCar(lic_plate, make, color, big_trunk)
 
 
-class Member():
+class Member:
     def __init__(self, cpf, name):
         self.cpf = cpf
         self.name = name
         self.evals = []
-        self.stars = 0
+        self.stars = 10
 
     def add_eval(self, grade):
         self.evals.append(grade)
@@ -147,12 +148,37 @@ class Trip:
         self.driver = driver
 
         if driver.rank == 'LUX':
-            self.cost = lux_trip_price
+            self._cost = lux_trip_price
         elif driver.rank == 'NORMAL':
-            self.cost = normal_trip_price
+            self._cost = normal_trip_price
         else:
-            self.cost = simple_trip_price
+            self._cost = simple_trip_price
 
     def trip_cost(self):
         route_cost = self.route.route_cost()
-        return self.cost(route_cost)
+        return self._cost(route_cost)
+
+
+def get_driver(rank, p_method, passenger, drivers):
+    selected_drivers = []
+    for d in drivers.values():
+        if d.payment_method == p_method:
+            selected_drivers.append(d)
+    categorized_drivers = []
+    for d in selected_drivers:
+        if d.rank == rank:
+            categorized_drivers.append(d)
+    starred_drivers = []
+    for d in categorized_drivers:
+        if -2 <= d.stars - passenger.stars <= 2:
+            starred_drivers.append(d)
+    if starred_drivers:
+        return random.choice(starred_drivers)
+    return None
+
+
+def get_neighborhood(name, neighborhoods):
+    for n in neighborhoods:
+        if n.name == name:
+            return n
+    return None
