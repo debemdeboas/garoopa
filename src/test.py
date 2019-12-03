@@ -42,9 +42,9 @@ class TestCases(unittest.TestCase):
 
     def test_cohen_sutherland_rectangles(self):
         self.g.set_pos(((0, 0,), (10, 10)))
-        self.assertTrue(g.in_rectangle(3, 3, 6, 7))  # Completely inside
-        self.assertTrue(g.in_rectangle(-1, 6, 7, 12))  # Partially inside
-        self.assertFalse(g.in_rectangle(-1, -1, -2, -7))  # Outside
+        self.assertTrue(self.g.in_rectangle(3, 3, 6, 7))  # Completely inside
+        self.assertTrue(self.g.in_rectangle(-1, 6, 7, 12))  # Partially inside
+        self.assertFalse(self.g.in_rectangle(-1, -1, -2, -7))  # Outside
 
     def test_geometry_singleton(self):
         # Try to create a new instance of the Geometry class, which is a singleton
