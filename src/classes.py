@@ -162,12 +162,13 @@ class Trip:
 def get_driver(rank, p_method, passenger, drivers):
     selected_drivers = []
     for d in drivers.values():
-        if d.payment_method == p_method:
+        if p_method in d.payment_method:
             selected_drivers.append(d)
     categorized_drivers = []
     for d in selected_drivers:
-        if d.rank == rank:
-            categorized_drivers.append(d)
+        if (d.rank == rank) or d.answers:
+            if not (d.rank == 'NORMAL' and rank == 'LUX'):
+                categorized_drivers.append(d)
     starred_drivers = []
     for d in categorized_drivers:
         if -2 <= d.stars - passenger.stars <= 2:

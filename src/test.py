@@ -18,9 +18,12 @@ class TestCases(unittest.TestCase):
         self.c3 = VehicleFactory.create_vehicle('lux', 'IRH6Z86', 'Lexus', 'Red', True)
         self.car_list = [self.c1, self.c2, self.c3]
 
-        self.driver1 = Driver(123456789, "John Doe", self.c1, ['DEBIT', 'CREDIT'])
-        self.driver2 = Driver(465984488, "Joo Dee", self.c2, ['MONEY', 'CREDIT'], True)
-        self.driver3 = Driver(684591377, "Azulon", self.c3, ['MONEY'], False)
+        self.driver1 = Driver('123456789', "John Doe", self.c1, ['CREDIT'])
+        self.driver2 = Driver('465984488', "Joo Dee", self.c2, ['MONEY', 'CREDIT'], True)
+        self.driver3 = Driver('684591377', "Azulon", self.c3, ['MONEY', 'DEBIT'], False)
+        self.drivers = {self.driver1.cpf: self.driver1,
+                        self.driver2.cpf: self.driver2,
+                        self.driver3.cpf: self.driver3}
 
     def test_route_cost(self):
         r = Route(self.c, self.neighborhoods_list[3], self.neighborhoods_list[0])
@@ -79,6 +82,15 @@ class TestCases(unittest.TestCase):
 
     def test_lux_trip_price(self):
         self.assertEqual(lux_trip_price((39, 4)), 46.33)
+
+    def test_get_driver(self):
+        d = get_driver('SIMPLE', 'CREDIT', Passenger(0, ''), self.drivers)
+        self.assertNotEqual(d, None)
+        d = get_driver('SIMPLE', 'DEBIT', Passenger(0, ''), self.drivers)
+        self.assertEqual(d, None)
+
+    def test_get_neighborhood(self):
+        self.assertEqual(get_neighborhood("Moinhos de Vento", self.neighborhoods_list), self.neighborhoods_list[0])
 
 
 if __name__ == '__main__':
