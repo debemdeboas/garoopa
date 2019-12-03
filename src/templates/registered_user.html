@@ -2,6 +2,12 @@
 {% block content %}
     <div>
         <h1>Hello {{ user.name }}!</h1>
+        <div>
+            <h2>User information</h2>
+            {{ user.name }}
+            {{ user.cpf }}
+        </div>
+
         <h2>Request a Trip from {{ form.city.name }}</h2>
         <form method="post" action="">
             {{ form.hidden_tag() }}

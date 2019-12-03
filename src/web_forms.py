@@ -27,3 +27,8 @@ class TripForm(FlaskForm):
     to_where = SelectField('To', choices=[], validators=[DataRequired()])
 
     submit = SubmitField('Request trip')
+
+
+class RateDriverForm(FlaskForm):
+    stars = SelectField('Stars', choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    submit = SubmitField('Rate driver')

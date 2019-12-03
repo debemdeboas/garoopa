@@ -14,6 +14,8 @@ drivers = {
     '69273238972': Driver('69273238972', 'Agnaldo de Freitas',
                           NormalCar('JAG0A90', 'Ford Focus', 'Black'), 'CREDIT', True)
 }
+trips = {}
+
 number_of_trips = 0
 
 neighborhoods_list = [Neighborhood("Moinhos de Vento", 15, 0, 0, 4, 4),
@@ -52,7 +54,8 @@ def registered_user(cpf):
     form.to_where.choices = [(n.name, n.name) for n in city_info.neighborhoods]
 
     if form.validate_on_submit():
-        curr_driver = get_driver(form.driver_ranks.data, form.payment_method.data, clients[cpf], drivers)
+        curr_driver = get_driver(form.driver_ranks.data, form.payment_method.data, clients[cpf], drivers,
+                                 form.big_trunk.data)
         if not curr_driver:
             return '<h1>No driver was found.</h1><a href=\"/\">Home Page</a'
         global number_of_trips
@@ -61,19 +64,32 @@ def registered_user(cpf):
                       get_neighborhood(form.to_where, neighborhoods_list))
         trip = Trip(clients[cpf], curr_driver, number_of_trips, datetime.datetime.now(), route)
         driver.trips[cpf] = trip
-        return f'<h1>Your trip has ended.</h1><h2>Invoice: {trip.trip_cost()}</h2>'
+        trips[number_of_trips] = trip
+        # TODO Implement driver rating
+        return redirect('/trip_information/' + number_of_trips)
     return render_template('registered_user.html', main_header='Client - Main Menu',
                            user=clients[cpf], form=form)
 
 
-@app.route("/driver", methods=['POST', 'GET'])
+@app.route('/trip_information/<trip_id>', methods=['POST', 'GET'])
+def trip_information(trip_id):
+    t = trips[trip_id]
+    form = RateDriverForm
+    if form.validate_on_submit():
+        t.driver.add_eval(form.stars.data)
+        return redirect(f'registered_user/{t.passenger.cpf}')
+    return render_template('trip_information.html', main_header='Summary of trip ' + trip_id, title='Trip Summary',
+                           trip=t, form=form)
+
+
+@app.route('/driver', methods=['POST', 'GET'])
 def driver():
     form = DriverRegistrationForm()
     return render_template('driver.html', form=form, main_header='Driver Registration Page', title='Register Driver')
 
 
-@app.route('/registered_driver', methods=['POST', 'GET'])
-def registered_driver():
+@app.route('/registered_driver/<cpf>', methods=['POST', 'GET'])
+def registered_driver(cpf):
     return render_template('registered_driver.html', main_header='Driver\'s Control Panel', title='Control Panel')
 
 

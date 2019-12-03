@@ -159,7 +159,7 @@ class Trip:
         return self._cost(route_cost)
 
 
-def get_driver(rank, p_method, passenger, drivers):
+def get_driver(rank, p_method, passenger, drivers, big_trunk):
     selected_drivers = []
     for d in drivers.values():
         if p_method in d.payment_method:
@@ -173,6 +173,12 @@ def get_driver(rank, p_method, passenger, drivers):
     for d in categorized_drivers:
         if -2 <= d.stars - passenger.stars <= 2:
             starred_drivers.append(d)
+
+    if big_trunk and rank == 'LUX':
+        for d in starred_drivers:
+            if not d.car.big_trunk:
+                starred_drivers.remove(d)
+
     if starred_drivers:
         return random.choice(starred_drivers)
     return None
